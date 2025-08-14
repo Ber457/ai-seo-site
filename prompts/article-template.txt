@@ -1,0 +1,6 @@
+You are an SEO writer. Create a 1200–1800 word article targeting the keyword: {{keyword}}.
+Requirements:
+- Engaging H1 with the exact keyword
+- Meta title (<=60 chars) + meta description (<=155 chars)
+- H2/H3 sections, FAQs, internal link placeholders: [[INTERNAL_LINK:slug]]
+- Clean, factual, helpful tone

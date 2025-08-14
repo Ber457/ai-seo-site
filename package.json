@@ -1,0 +1,14 @@
+{
+  "name": "ai-seo-site",
+  "version": "1.0.0",
+  "description": "Starter scaffold for AI SEO site with Claude content generation",
+  "license": "MIT",
+  "scripts": {
+    "generate-monthly-content": "node scripts/generate-monthly-content.mjs",
+    "deploy": "node scripts/deploy.mjs"
+  },
+  "dependencies": {
+    "anthropic": "^0.32.0",
+    "dotenv": "^16.4.5"
+  }
+}
