@@ -1,0 +1,195 @@
+// scripts/build-site.mjs
+import 'dotenv/config';
+import fs from 'fs';
+import path from 'path';
+import { marked } from 'marked';
+
+console.log('▶ Build starting...');
+
+const contentRoot = path.join(process.cwd(), 'content');
+const publicRoot = path.join(process.cwd(), 'public');
+
+const siteUrl = (process.env.SITE_BASE_URL || 'https://blog.flowzex.com').replace(/\/$/,'');
+const mainUrl = (process.env.MAIN_SITE_URL || 'https://flowzex.com').replace(/\/$/,'');
+
+// small helpers
+function walk(dir) {
+  const out = [];
+  if (!fs.existsSync(dir)) return out;
+  for (const item of fs.readdirSync(dir, { withFileTypes: true })) {
+    const p = path.join(dir, item.name);
+    if (item.isDirectory()) out.push(...walk(p));
+    else if (item.isFile() && p.toLowerCase().endsWith('.md')) out.push(p);
+  }
+  return out;
+}
+function slugify(s){ return s.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,''); }
+function wordCount(s){ return (s.match(/\b\w+\b/g) || []).length; }
+function extractMeta(md) {
+  const lines = md.split(/\r?\n/);
+  const h1 = lines.find(l => l.trim().startsWith('# '));
+  const title = h1 ? h1.replace(/^#\s*/, '').trim() : 'Article';
+  const body = md.replace(/[#>*_`]/g, ' ').replace(/\s+/g, ' ').trim();
+  const desc = body.slice(0, 155);
+  return { title, desc };
+}
+function navHtml(cats) {
+  const links = cats.map(c => `<a href="/${c.slug}/">${c.name}</a>`).join(' · ');
+  return `<nav style="margin-bottom:16px">
+    <a href="/index.html"><strong>Blog</strong></a> · ${links}
+    <span style="float:right"><a href="${mainUrl}/" target="_blank">Go to Flowzex.com</a> · <a href="${mainUrl}/#demo" target="_blank">Get a Demo</a></span>
+  </nav>`;
+}
+function pageShell({ title, desc, canonical, jsonLd, body }) {
+  return `<!doctype html><html lang="en"><head>
+<meta charset="utf-8"><title>${title}</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="${desc}">
+<link rel="canonical" href="${canonical}">
+<meta name="robots" content="index,follow">
+<script type="application/ld+json">
+${JSON.stringify(jsonLd, null, 2)}
+</script>
+<style>
+body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;max-width:980px;margin:40px auto;padding:0 16px;line-height:1.6}
+a{color:#0a58ca;text-decoration:none} a:hover{text-decoration:underline}
+.card{padding:16px;border:1px solid #eee;border-radius:12px;margin:12px 0;background:#fff}
+.cta{border:1px solid #d9e8ff;background:#f5f9ff}
+.footer{color:#666;margin-top:28px}
+ul{padding-left:18px}
+</style>
+</head><body>
+${body}
+<div class="footer"><p>© ${new Date().getFullYear()} Flowzex</p></div>
+</body></html>`;
+}
+
+// fresh /public
+fs.rmSync(publicRoot, { recursive: true, force: true });
+fs.mkdirSync(publicRoot, { recursive: true });
+
+// read categories.json names if present
+let catsCfg = { categories: [] };
+try { catsCfg = JSON.parse(fs.readFileSync('categories.json','utf8')); } catch {}
+const catsList = (catsCfg.categories||[]).map(c => ({slug:c.slug,name:c.name}));
+const catsMeta = Object.fromEntries(catsList.map(c => [c.slug, c.name]));
+
+// PASS 1: collect all markdown files
+const files = walk(contentRoot);
+console.log(`▶ Found ${files.length} markdown files under ${contentRoot}`);
+const all = [];
+for (const file of files) {
+  // rel path looks like: 2025-08-14\core-product\slug.md
+  const rel = path.relative(contentRoot, file);
+  const parts = rel.split(path.sep);
+  const cat = parts.length >= 3 ? parts[1] : 'uncategorized';
+  const md = fs.readFileSync(file, 'utf8');
+  const { title, desc } = extractMeta(md);
+  const html = marked.parse(md);
+  const baseName = path.basename(file, '.md');
+  const slug = slugify(baseName);
+  const stat = fs.statSync(file);
+  const wc = wordCount(md);
+  all.push({ file, cat, md, html, title, desc, slug, date: stat.mtime, words: wc });
+}
+
+// group by category
+const byCat = {};
+for (const a of all) {
+  byCat[a.cat] = byCat[a.cat] || [];
+  byCat[a.cat].push(a);
+}
+console.log(`▶ Grouped into ${Object.keys(byCat).length} categories`);
+
+// PASS 2: write article pages
+for (const a of all) {
+  const canonical = `${siteUrl}/${a.cat}/${a.slug}/`;
+  const siblings = (byCat[a.cat] || []).filter(x => x.slug !== a.slug).slice(0, 3);
+  const relList = siblings.map(r => `<li><a href="/${r.cat}/${r.slug}/">${r.title}</a></li>`).join('');
+  const cta = `<section class="card cta"><h2>Ready to put this into action?</h2>
+  <p>Flowzex helps teams launch AI-powered calling with compliance, analytics, and CRM integration.</p>
+  <p><a href="${mainUrl}/#demo" target="_blank"><strong>Get a demo on Flowzex.com →</strong></a></p></section>`;
+  const crumbs = [
+    { "@type": "ListItem", "position": 1, "name": "Home", "item": `${siteUrl}/` },
+    { "@type": "ListItem", "position": 2, "name": catsMeta[a.cat] || a.cat, "item": `${siteUrl}/${a.cat}/` },
+    { "@type": "ListItem", "position": 3, "name": a.title, "item": canonical }
+  ];
+  const jsonLd = [{
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": a.title,
+    "description": a.desc,
+    "wordCount": a.words,
+    "datePublished": new Date(a.date).toISOString(),
+    "mainEntityOfPage": canonical,
+    "articleSection": catsMeta[a.cat] || a.cat,
+    "author": { "@type": "Organization", "name": "Flowzex" },
+    "publisher": { "@type": "Organization", "name": "Flowzex" }
+  },{
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": crumbs
+  }];
+
+  const nav = navHtml(catsList);
+  let body = `${nav}<article class="card">${a.html}</article>${cta}`;
+  if (siblings.length) body += `<section class="card"><h2>Further Reading</h2><ul>${relList}</ul></section>`;
+
+  const outDir = path.join(publicRoot, a.cat, a.slug);
+  fs.mkdirSync(outDir, { recursive: true });
+  fs.writeFileSync(path.join(outDir, 'index.html'), pageShell({ title: a.title, desc: a.desc, canonical, jsonLd, body }), 'utf8');
+}
+
+// PASS 3: category index pages
+for (const [cat, items] of Object.entries(byCat)) {
+  const canonical = `${siteUrl}/${cat}/`;
+  const list = items.map(i => `<li><a href="/${cat}/${i.slug}/">${i.title}</a></li>`).join('');
+  const nav = navHtml(catsList);
+  const body = `${nav}<section class="card"><h1>${catsMeta[cat] || cat}</h1><ul>${list}</ul></section>`;
+  const jsonLd = [{
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    "name": catsMeta[cat] || cat,
+    "mainEntityOfPage": canonical
+  }];
+
+  const outDir = path.join(publicRoot, cat);
+  fs.mkdirSync(outDir, { recursive: true });
+  fs.writeFileSync(path.join(outDir, 'index.html'), pageShell({
+    title: catsMeta[cat] || cat,
+    desc: `${catsMeta[cat] || cat} articles`,
+    canonical, jsonLd, body
+  }), 'utf8');
+}
+
+// PASS 4: homepage
+const catCards = Object.entries(byCat).map(([cat, items]) =>
+  `<li class="card"><a href="/${cat}/"><strong>${catsMeta[cat] || cat}</strong></a><br><small>${items.length} articles</small></li>`
+).join('');
+const orgSchema = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "Flowzex",
+  "url": mainUrl,
+  "sameAs": [ mainUrl ]
+};
+const homeCanon = `${siteUrl}/`;
+const nav = navHtml(catsList);
+const homeBody = `${nav}
+<section class="card"><h1>AI Cold Calling & Sales Automation</h1>
+<p>Deep-dives, comparisons, playbooks. Long-form, schema, internal links.</p>
+<ul style="list-style:none;padding-left:0">${catCards}</ul>
+</section>
+<section class="card cta"><h2>See Flowzex in action</h2>
+<p>Launch AI-powered calling with compliance, analytics, and CRM integrations.</p>
+<p><a href="${mainUrl}/#demo" target="_blank"><strong>Get a demo →</strong></a></p></section>
+`;
+fs.writeFileSync(path.join(publicRoot, 'index.html'), pageShell({
+  title: 'Flowzex Blog',
+  desc: 'Long-form guides, comparisons, and playbooks for AI cold calling.',
+  canonical: homeCanon,
+  jsonLd: [orgSchema],
+  body: homeBody
+}), 'utf8');
+
+console.log(`✅ Built ${files.length} articles across ${Object.keys(byCat).length} categories → ${publicRoot}`);

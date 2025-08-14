@@ -5,10 +5,12 @@
   "license": "MIT",
   "scripts": {
     "generate-monthly-content": "node scripts/generate-monthly-content.mjs",
-    "deploy": "node scripts/deploy.mjs"
+    "deploy": "node scripts/deploy.mjs",
+    "build-site": "node scripts/build-site.mjs"
   },
   "dependencies": {
-    "anthropic": "^0.32.0",
-    "dotenv": "^16.4.5"
+    "@anthropic-ai/sdk": "^0.60.0",
+    "dotenv": "^16.6.1",
+    "marked": "^16.1.2"
   }
 }
