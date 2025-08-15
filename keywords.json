@@ -1,246 +1,74 @@
-﻿{
-    "comparisons":  [
-                        {
-                            "phrase":  "flowzex vs aircall",
-                            "volume":  1800
-                        },
-                        {
-                            "phrase":  "flowzex vs five9",
-                            "volume":  1600
-                        },
-                        {
-                            "phrase":  "flowzex vs ringcentral",
-                            "volume":  2200
-                        },
-                        {
-                            "phrase":  "flowzex vs 8x8",
-                            "volume":  1200
-                        },
-                        {
-                            "phrase":  "flowzex vs justcall",
-                            "volume":  900
-                        },
-                        {
-                            "phrase":  "flowzex vs dialpad",
-                            "volume":  2100
-                        },
-                        {
-                            "phrase":  "flowzex vs close crm dialer",
-                            "volume":  700
-                        },
-                        {
-                            "phrase":  "flowzex vs salesloft dialer",
-                            "volume":  600
-                        },
-                        {
-                            "phrase":  "flowzex vs outreach voice",
-                            "volume":  800
-                        },
-                        {
-                            "phrase":  "flowzex vs vonage",
-                            "volume":  1100
-                        },
-                        {
-                            "phrase":  "flowzex vs twilio flex",
-                            "volume":  1300
-                        },
-                        {
-                            "phrase":  "flowzex vs hubspot calling",
-                            "volume":  1900
-                        },
-                        {
-                            "phrase":  "Flowzex vs CloudTalk",
-                            "volume":  1900
-                        },
-                        {
-                            "phrase":  "Flowzex vs Talkdesk",
-                            "volume":  2100
-                        }
-                    ],
-    "core-product":  [
-                         {
-                             "phrase":  "ai voice agent for outbound calls",
-                             "volume":  2900
-                         },
-                         {
-                             "phrase":  "predictive dialer with local presence",
-                             "volume":  2400
-                         },
-                         {
-                             "phrase":  "ai voicemail drop for b2b",
-                             "volume":  900
-                         },
-                         {
-                             "phrase":  "ai cold calling script generator",
-                             "volume":  2600
-                         },
-                         {
-                             "phrase":  "sales call analytics with ai",
-                             "volume":  1700
-                         },
-                         {
-                             "phrase":  "crm integration for ai calling",
-                             "volume":  2200
-                         },
-                         {
-                             "phrase":  "call compliance tcpaa for ai dialer",
-                             "volume":  800
-                         },
-                         {
-                             "phrase":  "ai appointment setting assistant",
-                             "volume":  2800
-                         },
-                         {
-                             "phrase":  "sales pipeline enrichment from calls",
-                             "volume":  700
-                         },
-                         {
-                             "phrase":  "call quality monitoring with ai",
-                             "volume":  1600
-                         },
-                         {
-                             "phrase":  "ai local presence numbers",
-                             "volume":  1400
-                         },
-                         {
-                             "phrase":  "AI Call Coaching in Real Time",
-                             "volume":  2600
-                         },
-                         {
-                             "phrase":  "AI Lead Qualification on First Call",
-                             "volume":  2400
-                         },
-                         {
-                             "phrase":  "AI Quality Monitoring for Sales Calls",
-                             "volume":  2300
-                         },
-                         {
-                             "phrase":  "CRM Enrichment from Call Transcripts",
-                             "volume":  1800
-                         }
-                     ],
-    "industry-solutions":  [
-                               {
-                                   "phrase":  "ai cold calling for real estate leads",
-                                   "volume":  3200
-                               },
-                               {
-                                   "phrase":  "ai calling for insurance appointments",
-                                   "volume":  2300
-                               },
-                               {
-                                   "phrase":  "ai cold calling for solar leads",
-                                   "volume":  2700
-                               },
-                               {
-                                   "phrase":  "ai calling for home services",
-                                   "volume":  1600
-                               },
-                               {
-                                   "phrase":  "ai cold calling for b2b saas",
-                                   "volume":  2500
-                               },
-                               {
-                                   "phrase":  "ai appointment setting for healthcare",
-                                   "volume":  1400
-                               },
-                               {
-                                   "phrase":  "ai cold calling for recruiting",
-                                   "volume":  1800
-                               },
-                               {
-                                   "phrase":  "ai calling for education enrollment",
-                                   "volume":  900
-                               },
-                               {
-                                   "phrase":  "ai cold calling for fintech",
-                                   "volume":  1200
-                               },
-                               {
-                                   "phrase":  "ai calling for legal services",
-                                   "volume":  1000
-                               },
-                               {
-                                   "phrase":  "ai cold calling for ecommerce b2b",
-                                   "volume":  1100
-                               },
-                               {
-                                   "phrase":  "AI Cold Calling for Mortgage Lead Gen",
-                                   "volume":  2700
-                               },
-                               {
-                                   "phrase":  "AI Calling for Home Services Appointments",
-                                   "volume":  2500
-                               },
-                               {
-                                   "phrase":  "AI Outbound for B2B SaaS Pipeline",
-                                   "volume":  3000
-                               },
-                               {
-                                   "phrase":  "AI Calling for Healthcare Clinics",
-                                   "volume":  2100
-                               }
-                           ],
-    "case-studies":  [
-                         {
-                             "phrase":  "case study ai cold calling 3x appointments solar",
-                             "volume":  900
-                         },
-                         {
-                             "phrase":  "case study ai voice agent insurance renewals",
-                             "volume":  800
-                         },
-                         {
-                             "phrase":  "case study ai dialer real estate inbound to outbound",
-                             "volume":  700
-                         },
-                         {
-                             "phrase":  "case study ai voicemail drops b2b",
-                             "volume":  600
-                         },
-                         {
-                             "phrase":  "case study ai sales agent pipeline lift saas",
-                             "volume":  1100
-                         },
-                         {
-                             "phrase":  "case study local presence pickup rate",
-                             "volume":  1000
-                         },
-                         {
-                             "phrase":  "case study ai call analytics reduce chdurn",
-                             "volume":  500
-                         },
-                         {
-                             "phrase":  "case study ai appointment setting healthcare",
-                             "volume":  700
-                         },
-                         {
-                             "phrase":  "case study ai call compliance tcpaa",
-                             "volume":  500
-                         },
-                         {
-                             "phrase":  "case study ai outbound recruiting placements",
-                             "volume":  650
-                         },
-                         {
-                             "phrase":  "case study ai revival of dormant leads",
-                             "volume":  750
-                         },
-                         {
-                             "phrase":  "Case Study: 2x Pipeline in B2B SaaS with AI Dialer",
-                             "volume":  1800
-                         },
-                         {
-                             "phrase":  "Case Study: 40% No-Show Reduction in Home Services",
-                             "volume":  1700
-                         },
-                         {
-                             "phrase":  "Case Study: 3x Qualified Mortgage Appointments",
-                             "volume":  1600
-                         },
-                         {
-                             "phrase":  "Case Study: 25% More Kept Appointments in Clinics",
-                             "volume":  1500
-                         }
-                     ]
+{
+  "comparisons": [
+    {
+      "phrase": "Flowzex vs Dialpad",
+      "volume": 3200
+    },
+    {
+      "phrase": "Flowzex vs RingCentral",
+      "volume": 5400
+    },
+    {
+      "phrase": "Flowzex vs CloudTalk",
+      "volume": 1900
+    },
+    {
+      "phrase": "Flowzex vs Talkdesk",
+      "volume": 2100
+    }
+  ],
+  "core-product": [
+    {
+      "phrase": "AI Call Coaching in Real Time",
+      "volume": 2600
+    },
+    {
+      "phrase": "AI Lead Qualification on First Call",
+      "volume": 2400
+    },
+    {
+      "phrase": "AI Quality Monitoring for Sales Calls",
+      "volume": 2300
+    },
+    {
+      "phrase": "CRM Enrichment from Call Transcripts",
+      "volume": 1800
+    }
+  ],
+  "industry-solutions": [
+    {
+      "phrase": "AI Cold Calling for Mortgage Lead Gen",
+      "volume": 2700
+    },
+    {
+      "phrase": "AI Calling for Home Services Appointments",
+      "volume": 2500
+    },
+    {
+      "phrase": "AI Outbound for B2B SaaS Pipeline",
+      "volume": 3000
+    },
+    {
+      "phrase": "AI Calling for Healthcare Clinics",
+      "volume": 2100
+    }
+  ],
+  "case-studies": [
+    {
+      "phrase": "Case Study: 2x Pipeline in B2B SaaS with AI Dialer",
+      "volume": 1800
+    },
+    {
+      "phrase": "Case Study: 40% No-Show Reduction in Home Services",
+      "volume": 1700
+    },
+    {
+      "phrase": "Case Study: 3x Qualified Mortgage Appointments",
+      "volume": 1600
+    },
+    {
+      "phrase": "Case Study: 25% More Kept Appointments in Clinics",
+      "volume": 1500
+    }
+  ]
 }

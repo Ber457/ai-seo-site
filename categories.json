@@ -1,83 +1,29 @@
-﻿{
-    "site":  {
-                 "baseUrl":  "https://blog.flowzex.com",
-                 "mainUrl":  "https://flowzex.com"
-             },
-    "limits":  {
-                   "perCategory":  2
-               },
-    "categories":  [
-                       {
-                           "slug":  "core-product",
-                           "name":  "Core Product Pages",
-                           "keywords":  [
-                                            "AI Voice Agent for Outbound Calls",
-                                            "AI Dialer with Local Presence",
-                                            "Real-time Compliance \u0026 Call Recording",
-                                            "CRM Integration for AI Calls (HubSpot, Salesforce)",
-                                            "Analytics \u0026 Call Scoring Dashboard",
-                                            "Voicemail Drops with Personalization",
-                                            "Scheduling \u0026 Calendar Handoff",
-                                            "Call Whisper Coaching for Reps",
-                                            "Multi-language AI Calling",
-                                            "Pay-as-you-go Pricing for AI Calls"
-                                        ],
-                           "perCategory":  2
-                       },
-                       {
-                           "slug":  "industry-solutions",
-                           "name":  "Industry Solutions",
-                           "keywords":  [
-                                            "AI Cold Calling for Real Estate Lead Gen",
-                                            "AI Calling for Insurance Appointments",
-                                            "AI Sales Agent for B2B SaaS Demos",
-                                            "AI Cold Calls for Solar Installers",
-                                            "AI Outreach for Home Services",
-                                            "AI Calling for Legal Intake",
-                                            "Healthcare Patient Reactivation with AI",
-                                            "Fintech Customer Outreach with AI"
-                                        ],
-                           "perCategory":  2
-                       },
-                       {
-                           "slug":  "comparisons",
-                           "name":  "Comparison Pages",
-                           "keywords":  [
-                                            "Flowzex vs Five9",
-                                            "Flowzex vs Aircall",
-                                            "Flowzex vs Dialpad",
-                                            "Flowzex vs RingCentral",
-                                            "Flowzex vs Kixie",
-                                            "Flowzex vs Close",
-                                            "Flowzex vs Gong"
-                                        ],
-                           "perCategory":  2
-                       },
-                       {
-                           "slug":  "educational-hub",
-                           "name":  "Educational Hub",
-                           "keywords":  [
-                                            "Cold Calling Scripts That Convert (2025)",
-                                            "AI Prompt Engineering for Sales Calls",
-                                            "TCPA \u0026 Compliance Guide for AI Calling (US)",
-                                            "Voicemail Drop Playbook (B2B)",
-                                            "Objection Handling with AI Agents",
-                                            "KPI Framework for AI Sales Teams",
-                                            "Data Enrichment + Call Sequencing",
-                                            "Sales Funnel for AI Calling Campaigns"
-                                        ]
-                       },
-                       {
-                           "slug":  "case-studies",
-                           "name":  "Use Case Studies",
-                           "keywords":  [
-                                            "Case Study: 3x Appointment Rate in Solar",
-                                            "Case Study: Insurance Renewals with AI",
-                                            "Case Study: B2B SaaS Demo Booking",
-                                            "Case Study: Real Estate FSBO Outreach",
-                                            "Case Study: Home Services Upsell Campaign"
-                                        ],
-                           "perCategory":  2
-                       }
-                   ]
+{
+  "categories": [
+    {
+      "slug": "comparisons",
+      "name": "Comparison Pages",
+      "perCategory": 2
+    },
+    {
+      "slug": "core-product",
+      "name": "Core Product Pages",
+      "perCategory": 2
+    },
+    {
+      "slug": "industry-solutions",
+      "name": "Industry Solutions",
+      "perCategory": 2
+    },
+    {
+      "slug": "case-studies",
+      "name": "Use Case Studies",
+      "perCategory": 2
+    },
+    {
+      "slug": "educational-hub",
+      "name": "Educational Hub",
+      "perCategory": 0
+    }
+  ]
 }
