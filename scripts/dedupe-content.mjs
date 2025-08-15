@@ -13,42 +13,83 @@ function walk(dir){ const out=[]; if(!fs.existsSync(dir)) return out;
   }
   return out;
 }
+
+function readFileSafe(p){ try{ return fs.readFileSync(p,"utf8"); }catch{ return ""; } }
 function readTitle(p){
-  try{
-    const md = fs.readFileSync(p,"utf8");
-    const m = md.match(/^\s*#\s+(.+?)\s*$/m);
-    return (m? m[1] : path.basename(p, ".md")).trim();
-  }catch{ return path.basename(p, ".md"); }
+  const md = readFileSafe(p);
+  const m = md.match(/^\s*#\s+(.+?)\s*$/m);
+  return (m? m[1] : path.basename(p, ".md")).trim();
 }
-function words(p){
-  try{ return (fs.readFileSync(p,"utf8").match(/\b\w+\b/g)||[]).length; }catch{ return 0; }
+
+function norm(s){
+  return (s||"")
+    .toLowerCase()
+    .replace(/\bversus\b/g,"vs")
+    .replace(/\bvs\.\b/g,"vs")
+    .replace(/\b20(1[5-9]|2[0-9])\b/g,"")   // remove years 2015–2029
+    .replace(/[“”"’'()|\[\]:—\-]+/g," ")   // punctuation/dashes to space
+    .replace(/\b(guide|playbook|deep dive|comparison|review|features|pricing|overview)\b/g,"")
+    .replace(/\s+/g," ")
+    .trim();
 }
-function norm(s){ return (s||"").toLowerCase().replace(/[^a-z0-9]+/g," ").replace(/\s+/g," ").trim(); }
+
+function canonicalKey(title, slug){
+  const t = norm(title);
+  const s = norm(slug||"");
+
+  // Comparisons: collapse to competitor only
+  const m1 = t.match(/^flowzex\s+vs\s+(.+)$/i);
+  if (m1) return `comp:${norm(m1[1])}`;
+
+  const m2 = s.match(/^flowzex\s+vs\s+(.+)$/i);
+  if (m2) return `comp:${norm(m2[1])}`;
+
+  // Case studies: collapse to topic (drop "case study" prefix)
+  if (/^case study/i.test(t)) return `case:${t.replace(/^case study\s*[:\-]?\s*/i,"")}`;
+
+  // Fallback: normalized title
+  return `title:${t}`;
+}
+
+function wordCount(md){ return (md.match(/\b\w+\b/g)||[]).length; }
 
 const files = walk(contentRoot);
 const groups = new Map();
 
 for (const f of files){
   const rel = path.relative(contentRoot,f).replace(/\\/g,"/");
-  const slug = path.basename(f, ".md").toLowerCase();
   const title = readTitle(f);
-  const key = norm(title) || slug;
-  (groups.get(key) || groups.set(key, []).get(key)).push({file:f, rel, title, slug, wc:words(f), mtime:fs.statSync(f).mtimeMs});
+  const slug  = path.basename(f, ".md");
+  const key   = canonicalKey(title, slug);
+  const md    = readFileSafe(f);
+  const wc    = wordCount(md);
+  const mtime = fs.statSync(f).mtimeMs;
+
+  if (!groups.has(key)) groups.set(key, []);
+  groups.get(key).push({file:f, rel, title, slug, wc, mtime});
 }
 
-const toDelete = [];
+let removed = 0;
 for (const [key, arr] of groups){
   if (arr.length <= 1) continue;
-  // pick best: highest wordcount; tie → newest
+
+  // Keep the strongest: highest wordcount, then newest
   arr.sort((a,b)=> (b.wc - a.wc) || (b.mtime - a.mtime));
   const keep = arr[0];
   const drop = arr.slice(1);
-  console.log(`[DEDUP] KEEP: ${keep.rel} (${keep.wc} words)`);
+
+  console.log(`[DEDUP] KEY=${key}`);
+  console.log(`        KEEP: ${keep.rel} (${keep.wc} words)`);
+
   for (const d of drop){
-    console.log(`        DEL : ${d.rel} (${d.wc} words)`);
-    toDelete.push(d.file);
+    try{
+      fs.unlinkSync(d.file);
+      console.log(`        DEL : ${d.rel} (${d.wc} words)`);
+      removed++;
+    }catch(e){
+      console.log(`        ERR : ${d.rel} -> ${e.message}`);
+    }
   }
 }
-for (const p of toDelete){ try{ fs.unlinkSync(p); }catch{} }
 
-console.log(toDelete.length ? `Removed ${toDelete.length} duplicate file(s).` : "No duplicates found.");
+console.log(removed ? `Removed ${removed} duplicate file(s).` : "No duplicates found.");
