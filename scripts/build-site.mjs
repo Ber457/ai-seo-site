@@ -90,6 +90,8 @@ function pageShell({ title, desc, canonical, jsonLd, body, ogType="article", inl
 <script type="application/ld+json">
 ${JSON.stringify(jsonLd,null,2)}
 </script>
+<link rel="stylesheet" href="/assets/seo.css">
+<script defer src="/assets/seo-optimizer.js"></script>
 <style>
 :root{--bg:#0a0e1a;--bg2:#16213e;--card:rgba(20,30,54,.6);--card2:rgba(25,38,68,.8);--text:#f0f6ff;--muted:#8fa3bd;--accent:#6366f1;--accent2:#06b6d4;--border:rgba(148,163,184,.18)}
 *{box-sizing:border-box;margin:0;padding:0}html{scroll-behavior:smooth}
@@ -281,3 +283,4 @@ Sitemap: ${siteUrl}/sitemap.xml
 `,"utf8");
 
 console.log(`✅ Built ${files.length} articles across ${Object.keys(byCat).length} categories → ${publicRoot}`);
+
