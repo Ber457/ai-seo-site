@@ -21,7 +21,8 @@
                                             "Call Whisper Coaching for Reps",
                                             "Multi-language AI Calling",
                                             "Pay-as-you-go Pricing for AI Calls"
-                                        ]
+                                        ],
+                           "perCategory":  2
                        },
                        {
                            "slug":  "industry-solutions",
@@ -35,7 +36,8 @@
                                             "AI Calling for Legal Intake",
                                             "Healthcare Patient Reactivation with AI",
                                             "Fintech Customer Outreach with AI"
-                                        ]
+                                        ],
+                           "perCategory":  2
                        },
                        {
                            "slug":  "comparisons",
@@ -48,7 +50,8 @@
                                             "Flowzex vs Kixie",
                                             "Flowzex vs Close",
                                             "Flowzex vs Gong"
-                                        ]
+                                        ],
+                           "perCategory":  2
                        },
                        {
                            "slug":  "educational-hub",
@@ -73,7 +76,8 @@
                                             "Case Study: B2B SaaS Demo Booking",
                                             "Case Study: Real Estate FSBO Outreach",
                                             "Case Study: Home Services Upsell Campaign"
-                                        ]
+                                        ],
+                           "perCategory":  2
                        }
                    ]
 }
