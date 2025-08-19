@@ -1,66 +1,34 @@
-﻿import fs from "fs";
+import fs from "fs";
 import path from "path";
 try { await import("dotenv/config"); } catch {}
 
-/* ---------- Anthropic client ---------- */
 let Anthropic;
 try {
   const mod = await import("@anthropic-ai/sdk");
   Anthropic = mod.default || mod.Anthropic || mod;
 } catch (e) {
-  console.error("âŒ Missing @anthropic-ai/sdk. Install and re-run:\n  npm i @anthropic-ai/sdk -D");
+  console.error("❌ Missing @anthropic-ai/sdk. Install and re-run:\n  npm i @anthropic-ai/sdk -D");
   process.exit(1);
 }
 
-const API_KEY = (process.env.ANTHROPIC_API_KEY || "").trim();
-if (!API_KEY || !API_KEY.startsWith("sk-")) {
-  console.error("âŒ ANTHROPIC_API_KEY is missing/invalid in .env\nAdd:\nANTHROPIC_API_KEY=sk-...your_real_key...\n(Optional) set a model:\nCLAUDE_MODEL=claude-3-5-sonnet-latest");
+const API_KEY = process.env.ANTHROPIC_API_KEY || "";
+if (!API_KEY) {
+  console.error("❌ ANTHROPIC_API_KEY is not set in .env. Add a line:\nANTHROPIC_API_KEY=YOUR_REAL_KEY\nThen re-run this script.");
   process.exit(1);
 }
+
 const anthropic = new Anthropic({ apiKey: API_KEY });
+const MODEL = process.env.CLAUDE_MODEL || "claude-3-5-sonnet-20240620";
 
-/* ---------- Model fallback helper (avoids deprecated models) ---------- */
-const MODEL_CANDIDATES = [
-  (process.env.CLAUDE_MODEL || "").trim() || null, // if you set it in .env we try it first
-  "claude-3-5-sonnet-latest",                      // preferred alias
-  "claude-3-5-haiku-latest"                        // widely available fallback
-].filter(Boolean);
-
-async function callClaude(payload) {
-  let lastErr;
-  for (const model of MODEL_CANDIDATES) {
-    try {
-      console.log(`â†’ Trying model: ${model}`);
-      return await anthropic.messages.create({ ...payload, model });
-    } catch (e) {
-      const msg = (e?.message || e?.error?.message || "").toLowerCase();
-      // If itâ€™s a model problem, try the next one
-      if (msg.includes("model") || msg.includes("not found") || msg.includes("deprecated")) {
-        console.warn(`âš ï¸ Model failed: ${model} â€” ${e.message || e}`);
-        lastErr = e;
-        continue;
-      }
-      // API key or auth error: surface clearly and stop
-      if (msg.includes("api key") || msg.includes("x-api-key") || msg.includes("unauthorized")) {
-        console.error("âŒ API key/auth error â€” check .env ANTHROPIC_API_KEY.");
-      }
-      throw e;
-    }
-  }
-  throw lastErr || new Error("No usable Anthropic model found.");
-}
-
-/* ---------- Categories & generation config ---------- */
 const categories = [
-  { slug: "core-product",        name: "Core Product Pages" },
-  { slug: "industry-solutions",  name: "Industry Solutions" },
-  { slug: "comparisons",         name: "Comparison Pages" },
-  { slug: "case-studies",        name: "Use Case Studies" },
+  { slug: "core-product", name: "Core Product Pages" },
+  { slug: "industry-solutions", name: "Industry Solutions" },
+  { slug: "comparisons", name: "Comparison Pages" },
+  { slug: "case-studies", name: "Use Case Studies" },
 ];
 
 const PER = Number(process.argv.find(a => a.startsWith("--per="))?.split("=")[1] || 2);
 
-/* ---------- Paths & utilities ---------- */
 const contentRoot = path.join(process.cwd(), "content");
 const today = new Date();
 const yyyy = today.getFullYear();
@@ -102,10 +70,10 @@ function existingSlugsAndTitles() {
   return { slugs, titles };
 }
 
-/* ---------- Claude call (uses model fallback) ---------- */
 async function askClaude(prompt, system) {
   try {
-    const res = await callClaude({
+    const res = await anthropic.messages.create({
+      model: MODEL,
       max_tokens: 4096,
       temperature: 0.6,
       system,
@@ -114,22 +82,21 @@ async function askClaude(prompt, system) {
     const out = res?.content?.[0]?.type === "text" ? res.content[0].text : "";
     return (out || "").trim();
   } catch (err) {
-    const msg = err?.error?.error?.message || err?.error?.message || err?.message || String(err);
-    console.error("âŒ Claude API error:", msg);
+    const msg = err?.error?.error?.message || err?.message || String(err);
+    console.error("❌ Claude API error:", msg);
     return "";
   }
 }
 
-/* ---------- Generator ---------- */
 async function generateOneArticle(cat, forbidTitles, seenThisRun) {
   const system = `You are an expert B2B SEO writer for Flowzex (AI cold calling platform).
-Write authoritative, practical, long-form content (3200â€“4800 words), Markdown only.
+Write authoritative, practical, long-form content (3200–4800 words), Markdown only.
 STRICT:
 - One H1 (# Title) that is brand-new.
 - Never reuse any title from the forbidden list.
 - Use varied structures (checklists, frameworks, step-by-step, tables, bullets).
 - Include internal-link placeholders like: [See related: <slug>]
-- First line: <!-- meta: 150â€“160 chars -->
+- First line: <!-- meta: 150–160 chars -->
 - No fluff. Practical and specific.`;
 
   const prompt = `Category: ${cat.name} (${cat.slug})
@@ -169,9 +136,8 @@ Return ONLY Markdown (no wrapping text).`;
   return false;
 }
 
-/* ---------- Runner ---------- */
 (async () => {
-  console.log(`â–¶ Claude generation starting (per category = ${PER})`);
+  console.log(`▶ Claude generation starting (per category = ${PER})`);
   fs.mkdirSync(dateFolder, { recursive: true });
 
   const forbid = existingSlugsAndTitles().titles;
@@ -184,7 +150,7 @@ Return ONLY Markdown (no wrapping text).`;
       if (ok) made++;
       await new Promise(r => setTimeout(r, 400));
     }
-    console.log(`âœ… ${cat.slug}: created ${made}/${PER}`);
+    console.log(`✅ ${cat.slug}: created ${made}/${PER}`);
   }
   console.log("Done.");
 })();

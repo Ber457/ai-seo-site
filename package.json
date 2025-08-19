@@ -5,11 +5,14 @@
   "license": "MIT",
   "scripts": {
     "generate-monthly-content": "node scripts/generate-monthly-content.mjs",
+    "build-site": "node scripts/build-site.mjs",
     "deploy": "node scripts/deploy.mjs",
-    "build-site": "node scripts/build-site.mjs"
+    "cleanup": "node scripts/cleanup.mjs",
+    "auto:deploy": "node -r dotenv/config ./scripts/solid-generate.mjs --per=2 && node ./scripts/sync-generated.mjs && npm run deploy"
   },
   "dependencies": {
     "cheerio": "^1.1.2",
+    "glob": "^11.0.3",
     "marked": "^16.1.2"
   },
   "devDependencies": {
